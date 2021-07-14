@@ -1,0 +1,32 @@
+.plus-practice li input {
+    width: 100px;
+}
+
+.plus-practice li .question .number {
+    width: 100px;
+    text-align: center;
+}
+.plus-practice li + li{
+    margin-top: 10px;
+}
+.bi-pause {
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+}
+div.fail input{
+    border: 2px solid red !important;
+}
+div.success input{
+    border: 2px solid green !important;
+}
+.answer {
+    width: 100px;
+}
+.question {
+    display: inline-block;
+    width: 300px;
+}
+.plus-practice {
+    display: inline-table;
+}
