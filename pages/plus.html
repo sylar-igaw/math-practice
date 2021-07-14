@@ -1,0 +1,132 @@
+<html>
+    <style>
+        .plus-practice{
+            display: table;
+        }
+        .plus-practice div input {
+            width: 100px;
+        }
+    
+        .plus-practice div .question .number {
+            width: 100px;
+            text-align: center;
+        }
+        .plus-practice div + div{
+            margin-top: 10px;
+        }
+        .bi-pause {
+            -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+            -webkit-transform: rotate(90deg);
+        }
+        div.fail input{
+            border: 1px solid red !important;
+        }
+        div.success input{
+            border: 1px solid green !important;
+        }
+        .answer {
+            width: 100px;
+        }
+        .question {
+            width: 50%;
+            display: inline-block;
+        }
+        .page-title {
+            font-weight: bold;
+        }
+    </style>
+<head>
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    
+    
+</head>
+
+
+<body class="font-monospace">
+    <div class="header p-2 border-bottom fixed-top">Sylar's Site</div>
+    <form id="frm_test">
+
+        <div class="container mt-5">
+            <div class="page-title"> * 더하기 연습  </div>
+            <div class="plus-practice" id="plus_practice">
+            </ul>
+        </div>
+        <div class="btn btn-success ms-5 mt-2" id="btn-check" >확인</div>
+    </form>
+    <div class="footer">
+        
+    </div>
+</body>
+
+<template id="plus_template">
+    <div class="question pt-1">
+        <div class="d-flex">
+            <span class="number p-1 first">{first}</span>
+            <i class="bi bi-plus p-2"></i>
+            <span class="number p-1 second">{second}</span>
+            <i class="bi bi-pause p-2"></i>
+            <input class="answer" name="answer" type="number" data-value="{answer}" min=0 max=9 />
+        </div>
+    </li>
+</template>
+<script>
+    var max_question = 10;
+    $("document").ready(function () {
+        for (var i = 1; i <= max_question; i++) {
+            let $element = $("#plus_template").clone();
+            let first = getRandomArbitrary(1,9).toFixed();
+            let second = getRandomArbitrary(1,9).toFixed();
+            //console.log(first, second);
+            let appendHtml = $element.html()
+                .replace("{first}", first)
+                .replace("{second}", second)
+                .replace("{answer}", parseInt(first)+parseInt(second))
+            $("#plus_practice").append(appendHtml);
+        }
+
+        $("#btn-check").click(()=>{
+            $("input").each(function(){
+                console.log($(this).val() , $(this).data("value"));
+                if( $(this).val()  == $(this).data("value"))
+                {
+                    $(this).closest("div").removeClass("fail").addClass("success");
+                }
+                else {
+                    $(this).closest("div").removeClass("success").addClass("fail");
+                }
+            });
+            if( $("div.success").length == max_question )
+            {
+                var ans = confirm("Perfect!!! 완벽해요. Try again? 다시 할래요?");
+                if( ans )
+                {
+                    location.reload();
+                }
+            }
+            else 
+            {
+                alert("Correct the answer in the red box! 빨간 상자안의 답을 수정하세요")
+            }
+
+        });
+    });
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+</script>
+
+</html>
