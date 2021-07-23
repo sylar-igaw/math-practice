@@ -84,7 +84,7 @@ function handleCanvasClick() {
 }
 
 function handleCM(event) {
-  event.preventDefault();
+  //event.preventDefault();
 }
 
 function handleSaveClick() {
@@ -93,6 +93,7 @@ function handleSaveClick() {
   link.href = image;
   link.download = `painting_${timestamp()}`;
   link.click();
+  
 }
 
 function timestamp(){ 
@@ -137,10 +138,8 @@ function handleStart(evt) {
   
     for (var i = 0; i < touches.length; i++) {
       ongoingTouches.push(copyTouch(touches[i]));
-      var color = colorForTouch(touches[i]);
       ctx.beginPath();
       ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
-      ctx.fillStyle = color;
       ctx.fill();
       log("touchstart:" + i + ".");
     }
@@ -148,10 +147,8 @@ function handleStart(evt) {
 }
 function handleMove(evt) {
     evt.preventDefault();
-    var touches = evt.changedTouches;findPos
-  
+    var touches = evt.changedTouches;
     for (var i = 0; i < touches.length; i++) {
-      var color = colorForTouch(touches[i]);
       var idx = ongoingTouchIndexById(touches[i].identifier);
   
       if (idx >= 0) {
@@ -161,14 +158,13 @@ function handleMove(evt) {
         ctx.moveTo(ongoingTouches[idx].clientX-offset.x, ongoingTouches[idx].clientY-offset.y);
         log("ctx.lineTo(" + touches[i].clientX + ", " + touches[i].clientY + ");");
         ctx.lineTo(touches[i].clientX-offset.x, touches[i].clientY-offset.y);
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = color;
         ctx.stroke();
         
         ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
       } else {
       }
     }
+    log("handle Touch Move");
   }
 
   function handleMove(evt) {
@@ -176,15 +172,12 @@ function handleMove(evt) {
     var touches = evt.changedTouches;
   
     for (var i = 0; i < touches.length; i++) {
-      var color = colorForTouch(touches[i]);
       var idx = ongoingTouchIndexById(touches[i].identifier);
   
       if (idx >= 0) {
         ctx.beginPath();
         ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
         ctx.lineTo(touches[i].pageX, touches[i].pageY);
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = color;
         ctx.stroke();
   
         ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
@@ -198,12 +191,9 @@ function handleMove(evt) {
     var touches = evt.changedTouches;
   
     for (var i = 0; i < touches.length; i++) {
-      var color = colorForTouch(touches[i]);
       var idx = ongoingTouchIndexById(touches[i].identifier);
   
       if (idx >= 0) {
-        ctx.lineWidth = 4;
-        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
         ctx.lineTo(touches[i].pageX, touches[i].pageY);
@@ -212,6 +202,7 @@ function handleMove(evt) {
       } else {
       }
     }
+    log("handleEnd");
   }
 
   function handleCancel(evt) {
@@ -227,4 +218,17 @@ function handleMove(evt) {
   function log(msg) {
     var p = document.getElementById('log');
     p.innerHTML = msg + "\n" + p.innerHTML;
+  }
+  function ongoingTouchIndexById(idToFind) {
+    for (var i = 0; i < ongoingTouches.length; i++) {
+      var id = ongoingTouches[i].identifier;
+      
+      if (id == idToFind) {
+        return i;
+      }
+    }
+    return -1; // not found
+  }
+  function copyTouch(touch) {
+    return {identifier: touch.identifier,clientX: touch.clientX,clientY: touch.clientY};
   }
