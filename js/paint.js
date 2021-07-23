@@ -5,6 +5,8 @@ const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
 const saveBtn = document.getElementById("jsSave");
 
+var ongoingTouches = [];
+
 const INITIAL_COLOR = "#2c2c2c";
 const CANVAS_SIZE = 700;
 
@@ -102,10 +104,10 @@ if (canvas) {
   canvas.addEventListener("click", handleCanvasClick);
   canvas.addEventListener("contextmenu", handleCM);
   //table용
-  canvas.addEventListener("touchmove", onMouseMove);
-  canvas.addEventListener("touchstart", startPainting);
-  canvas.addEventListener("touchend", stopPainting);
-  canvas.addEventListener("touchcancel", stopPainting);
+  canvas.addEventListener("touchstart", handleStart, false);
+  canvas.addEventListener("touchend", handleEnd, false);
+  canvas.addEventListener("touchcancel", handleCancel, false);
+  canvas.addEventListener("touchmove", handleMove, false);
 }
 
 Array.from(colors).forEach(color =>
@@ -123,3 +125,90 @@ if (mode) {
 if (saveBtn) {
   saveBtn.addEventListener("click", handleSaveClick);
 }
+
+function handleStart(evt) {
+    evt.preventDefault();
+    var touches = evt.changedTouches;
+  
+    for (var i = 0; i < touches.length; i++) {
+      ongoingTouches.push(copyTouch(touches[i]));
+      var color = colorForTouch(touches[i]);
+      ctx.beginPath();
+      ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+  }
+  function handleMove(evt) {
+    evt.preventDefault();
+    var touches = evt.changedTouches;
+  
+    for (var i = 0; i < touches.length; i++) {
+      var color = colorForTouch(touches[i]);
+      var idx = ongoingTouchIndexById(touches[i].identifier);
+  
+      if (idx >= 0) {
+        ctx.beginPath();
+        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+        ctx.lineTo(touches[i].pageX, touches[i].pageY);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+  
+        ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+      } else {
+      }
+    }
+  }
+
+  function handleMove(evt) {
+    evt.preventDefault();
+    var touches = evt.changedTouches;
+  
+    for (var i = 0; i < touches.length; i++) {
+      var color = colorForTouch(touches[i]);
+      var idx = ongoingTouchIndexById(touches[i].identifier);
+  
+      if (idx >= 0) {
+        ctx.beginPath();
+        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+        ctx.lineTo(touches[i].pageX, touches[i].pageY);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+  
+        ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+      } else {
+      }
+    }
+  }
+  function handleEnd(evt) {
+    evt.preventDefault();
+    var touches = evt.changedTouches;
+  
+    for (var i = 0; i < touches.length; i++) {
+      var color = colorForTouch(touches[i]);
+      var idx = ongoingTouchIndexById(touches[i].identifier);
+  
+      if (idx >= 0) {
+        ctx.lineWidth = 4;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+        ctx.lineTo(touches[i].pageX, touches[i].pageY);
+        ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8);  // and a square at the end
+        ongoingTouches.splice(idx, 1);  // remove it; we're done
+      } else {
+      }
+    }
+  }
+
+  function handleCancel(evt) {
+    evt.preventDefault();
+    var touches = evt.changedTouches;
+  
+    for (var i = 0; i < touches.length; i++) {
+      var idx = ongoingTouchIndexById(touches[i].identifier);
+      ongoingTouches.splice(idx, 1);  // remove it; we're done
+    }
+  }
