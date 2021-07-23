@@ -186,8 +186,8 @@ function handleMove(evt) {
 //     evt.originalTarget.dispatchEvent(newEvt);
 //   }
   function log(msg) {
-    // var p = document.getElementById('log');
-    // p.innerHTML = msg + "\n" + p.innerHTML;
+    var p = document.getElementById('log');
+    p.innerHTML = msg + "\n" + p.innerHTML;
   }
   function findPos (obj) {
     var curleft = 0,
