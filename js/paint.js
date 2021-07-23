@@ -39,7 +39,7 @@ function onMouseMove(event) {
 
   var touches = event.changedTouches;
   console.log("touches",touches);
-  if (!painting) {
+  if (painting == false) {
     ctx.beginPath();
     ctx.moveTo(x, y);
   } else {
@@ -106,15 +106,14 @@ if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mouseleave", stopPainting);
+  //canvas.addEventListener("mouseleave", stopPainting);
   canvas.addEventListener("click", handleCanvasClick);
-  canvas.addEventListener("contextmenu", handleCM);
+  //canvas.addEventListener("contextmenu", handleCM);
   //table용
-  var el =document.body;
-  el.addEventListener("touchstart", handleStart, false);
-  el.addEventListener("touchend", handleEnd, false);
-  el.addEventListener("touchcancel", handleCancel, false);
-  el.addEventListener("touchmove", handleMove, false);
+  canvas.addEventListener("touchstart", startPainting, false);
+  canvas.addEventListener("touchend", stopPainting, false);
+  canvas.addEventListener("touchcancel", stopPainting, false);
+  canvas.addEventListener("touchmove", handleMove, false);
 }
 
 Array.from(colors).forEach(color =>
@@ -133,86 +132,26 @@ if (saveBtn) {
   saveBtn.addEventListener("click", handleSaveClick);
 }
 
-function handleStart(evt) {
-    evt.preventDefault();
-    log("touchstart");
-    var touches = evt.changedTouches;
-  
-    for (var i = 0; i < touches.length; i++) {
-      ongoingTouches.push(copyTouch(touches[i]));
-      ctx.beginPath();
-      ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
-      ctx.fill();
-      
-    }
-    
-}
 function handleMove(evt) {
     evt.preventDefault();
     log("handleMove");
     var touches = evt.changedTouches;
     for (var i = 0; i < touches.length; i++) {
-      var idx = ongoingTouchIndexById(touches[i].identifier);
-  
-      if (idx >= 0) {
-        log("continuing touch " + idx);
-        ctx.beginPath();
-        log("ctx.moveTo(" + ongoingTouches[idx].clientX + ", " + ongoingTouches[idx].clientY + ");");
-        ctx.moveTo(ongoingTouches[idx].clientX-offset.x, ongoingTouches[idx].clientY-offset.y);
-        log("ctx.lineTo(" + touches[i].clientX + ", " + touches[i].clientY + ");");
-        ctx.lineTo(touches[i].clientX-offset.x, touches[i].clientY-offset.y);
-        ctx.stroke();
-        
-        ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-      } else {
-      }
-    }
-  }
-  function handleEnd(evt) {
-    evt.preventDefault();
-    log("handleEnd");
-    var touches = evt.changedTouches;
-    for (var i = 0; i < touches.length; i++) {
-      var idx = ongoingTouchIndexById(touches[i].identifier);
-  
-      if (idx >= 0) {
-        ctx.beginPath();
-        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
-        ctx.lineTo(touches[i].pageX, touches[i].pageY);
-        ctx.fillRect(touches[i].pageX - 4, touches[i].pageY - 4, 8, 8);  // and a square at the end
-        ongoingTouches.splice(idx, 1);  // remove it; we're done
-      } else {
-      }
-    }
-  }
-  function handleCancel(evt) {
-    evt.preventDefault();
-    var touches = evt.changedTouches;
-    for (var i = 0; i < touches.length; i++) {
-      var idx = ongoingTouchIndexById(touches[i].identifier);
-      ongoingTouches.splice(idx, 1);  // remove it; we're done
-    }
-  }
+        let mx = touches[i].clientX;
+        let my = touches[i].clientY;
 
-  function log(msg) {
-    var p = document.getElementById('log');
-    p.innerHTML = msg + "\n" + p.innerHTML;
-  }
-  function ongoingTouchIndexById(idToFind) {
-    for (var i = 0; i < ongoingTouches.length; i++) {
-      var id = ongoingTouches[i].identifier;
-      
-      if (id == idToFind) {
-        return i;
+        if (painting == false) {
+            ctx.beginPath();
+            ctx.moveTo(mx, my);
+          } else {
+            ctx.lineTo(mx, my);
+            ctx.stroke();
+          }
       }
-    }
-    return -1; // not found
-  }
-  function copyTouch(touch) {
-    return {identifier: touch.identifier,clientX: touch.clientX,clientY: touch.clientY};
   }
   function onTouch(evt) {
     evt.preventDefault();
+    log("onTouch");
     if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
       return;
   
@@ -239,4 +178,8 @@ function handleMove(evt) {
       touch.screenX, touch.screenY, touch.clientX, touch.clientY,
       evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
     evt.originalTarget.dispatchEvent(newEvt);
+  }
+  function log(msg) {
+    var p = document.getElementById('log');
+    p.innerHTML = msg + "\n" + p.innerHTML;
   }
