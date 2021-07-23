@@ -1,0 +1,83 @@
+@import "main.css";
+
+body {
+    background-color: #f6f9fc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.canvas{
+    width: 700px;
+    height:700px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0, 0 , 0, 0.08);
+}
+.controls{
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.control__color.black
+{
+    background-color: #2c2c2c;
+}
+.control__color.white
+{
+    background-color: white;
+}
+.control__color.red{
+    background-color: #ff3b30;
+}
+.control__color.orange{
+    background-color: #ff9500;
+}
+.control__color.yellow{
+    background-color: #ffcc00;
+}
+.control__color.green{
+    background-color: #4cd963;
+}
+.control__color.skyblue{
+    background-color: #5ac8fa;
+}
+.control__color.blue{
+    background-color: #0579ff;
+}
+.control__color.purple{
+    background-color: #5856d6;
+}
+.controls .control__color{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(50,50,93,0.11), 0 1px 3px rgba(0, 0 , 0, 0.08);
+    margin-right: 5px;
+    cursor: pointer;
+}
+.control_colors{
+    display: flex;
+}
+
+.controls__btns button {
+    all: unset;
+    cursor: pointer;
+    background-color: white;
+    padding: 5px 0px;
+    width: 80px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    color: rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 12px;
+  }
+  .controls__btns button:active {
+    transform: scale(0.98);
+  }
+.controls__range{
+    color: darkgrey;
+}
