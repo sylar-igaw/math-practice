@@ -81,9 +81,15 @@ function handleSaveClick() {
   const image = canvas.toDataURL();
   const link = document.createElement("a");
   link.href = image;
-  link.download = `Paint_${new Date().format("yyyyMMddHH24mmss")}`;
+  link.download = `painting_${timestamp()}`;
   link.click();
 }
+
+function timestamp(){ 
+    var today = new Date(); today.setHours(today.getHours() + 9); 
+    return today.toISOString().replace('T', ' ').substring(0, 19); 
+}
+
 
 if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
