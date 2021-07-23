@@ -81,3 +81,8 @@ body {
 .controls__range{
     color: darkgrey;
 }
+
+.controls span{
+    text-align: right;
+    width: 100%;
+}
