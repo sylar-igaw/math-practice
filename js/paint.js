@@ -106,9 +106,9 @@ if (canvas) {
   canvas.addEventListener("mousemove", onMouseMove);
   canvas.addEventListener("mousedown", startPainting);
   canvas.addEventListener("mouseup", stopPainting);
-  //canvas.addEventListener("mouseleave", stopPainting);
+  canvas.addEventListener("mouseleave", stopPainting);
   canvas.addEventListener("click", handleCanvasClick);
-  //canvas.addEventListener("contextmenu", handleCM);
+  canvas.addEventListener("contextmenu", handleCM);
   //table용
   canvas.addEventListener("touchstart", handleTouchStart, false);
   canvas.addEventListener("touchend", handleTouchEnd, false);
