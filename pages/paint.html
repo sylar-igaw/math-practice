@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <!-- jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -6,25 +7,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    
+
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    
+
     <!-- main css-->
-    <link href="../css/paint.css" rel="stylesheet" >
-    
+    <link href="../css/paint.css" rel="stylesheet">
+
 </head>
+
 <body class="font-monospace">
-        <div class="p-2 ">
-            <span>v0.3</span>
-            <canvas id ="jsCanvas" class="canvas"></canvas>
-            <div class="controls mt-4">
+    <div class="p-2 ">
+        <span>v0.31</span>
+        <canvas id="jsCanvas" class="canvas"></canvas>
+        <div class="controls mt-4">
             <div class="controls__range">
-                <input type="range" id="jsRange" min="0.1" max="50.0" value="2.5" steps="0.1" >
+                <input type="range" id="jsRange" min="0.1" max="50.0" value="2.5" steps="0.1">
             </div>
 
 
@@ -43,9 +45,10 @@
                 <div class="control__color jsColor" style="background-color: #0579ff;"></div>
                 <div class="control__color jsColor" style="background-color: #5856d6;"></div>
             </div>
-            </div>
-            
         </div>
+        <br>
+        Log: <pre id="log" style="border: 1px solid #ccc;"></pre>
+    </div>
 </body>
 
 <template id="plus_template">
@@ -57,9 +60,8 @@
             <i class="bi bi-pause p-2"></i>
             <input class="answer" name="answer" type="number" data-value="{answer}" min=0 max=9 />
         </div>
-    </li>
+        </li>
 </template>
 <script src="../js/paint.js"></script>
 
 </html>
-

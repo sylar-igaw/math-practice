@@ -4,6 +4,7 @@ const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
 const saveBtn = document.getElementById("jsSave");
+log("initialized.");
 
 var ongoingTouches = [];
 
@@ -137,24 +138,29 @@ function handleStart(evt) {
       ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
       ctx.fillStyle = color;
       ctx.fill();
+      log("touchstart:" + i + ".");
     }
-  }
-  function handleMove(evt) {
+    
+}
+function handleMove(evt) {
     evt.preventDefault();
-    var touches = evt.changedTouches;
+    var touches = evt.changedTouches;findPos
   
     for (var i = 0; i < touches.length; i++) {
       var color = colorForTouch(touches[i]);
       var idx = ongoingTouchIndexById(touches[i].identifier);
   
       if (idx >= 0) {
+        log("continuing touch " + idx);
         ctx.beginPath();
-        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
-        ctx.lineTo(touches[i].pageX, touches[i].pageY);
+        log("ctx.moveTo(" + ongoingTouches[idx].clientX + ", " + ongoingTouches[idx].clientY + ");");
+        ctx.moveTo(ongoingTouches[idx].clientX-offset.x, ongoingTouches[idx].clientY-offset.y);
+        log("ctx.lineTo(" + touches[i].clientX + ", " + touches[i].clientY + ");");
+        ctx.lineTo(touches[i].clientX-offset.x, touches[i].clientY-offset.y);
         ctx.lineWidth = 4;
         ctx.strokeStyle = color;
         ctx.stroke();
-  
+        
         ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
       } else {
       }
@@ -179,6 +185,7 @@ function handleStart(evt) {
   
         ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
       } else {
+        log("can't figure out which touch to end");
       }
     }
   }
