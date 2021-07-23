@@ -33,6 +33,9 @@ function startPainting() {
 function onMouseMove(event) {
   const x = event.offsetX;
   const y = event.offsetY;
+
+  var touches = event.changedTouches;
+  console.log("touches",touches);
   if (!painting) {
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -100,9 +103,9 @@ if (canvas) {
   canvas.addEventListener("contextmenu", handleCM);
   //table용
   canvas.addEventListener("touchmove", onMouseMove);
-  el.addEventListener("touchstart", startPainting);
-  el.addEventListener("touchend", stopPainting);
-  el.addEventListener("touchcancel", stopPainting);
+  canvas.addEventListener("touchstart", startPainting);
+  canvas.addEventListener("touchend", stopPainting);
+  canvas.addEventListener("touchcancel", stopPainting);
 }
 
 Array.from(colors).forEach(color =>
