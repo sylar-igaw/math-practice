@@ -38,7 +38,7 @@ function onMouseMove(event) {
   const y = event.offsetY;
 
   var touches = event.changedTouches;
-  console.log("touches",touches);
+  //console.log("touches",touches);
   if (painting == false) {
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -110,9 +110,8 @@ if (canvas) {
   canvas.addEventListener("click", handleCanvasClick);
   //canvas.addEventListener("contextmenu", handleCM);
   //table용
-  canvas.addEventListener("touchstart", startPainting, false);
-  canvas.addEventListener("touchend", stopPainting, false);
-  canvas.addEventListener("touchcancel", stopPainting, false);
+  canvas.addEventListener("touchstart", handleTouchStart, false);
+  canvas.addEventListener("touchend", handleTouchEnd, false);
   canvas.addEventListener("touchmove", handleMove, false);
 }
 
@@ -131,55 +130,75 @@ if (mode) {
 if (saveBtn) {
   saveBtn.addEventListener("click", handleSaveClick);
 }
-
+function handleTouchStart(evt)
+{
+    evt.preventDefault();
+    ctx.beginPath();
+}
+function handleTouchEnd(evt)
+{
+    evt.preventDefault();
+}
 function handleMove(evt) {
     evt.preventDefault();
     log("handleMove");
+    
     var touches = evt.changedTouches;
-    for (var i = 0; i < touches.length; i++) {
-        let mx = touches[i].clientX;
-        let my = touches[i].clientY;
+    console.log(touches);
+    var offset = findPos(canvas); 
 
-        if (painting == false) {
-            ctx.beginPath();
-            ctx.moveTo(mx, my);
-          } else {
-            ctx.lineTo(mx, my);
-            ctx.stroke();
-          }
-      }
-  }
-  function onTouch(evt) {
-    evt.preventDefault();
-    log("onTouch");
-    if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
-      return;
-  
-    var newEvt = document.createEvent("MouseEvents");
-    var type = null;
-    var touch = null;
-  
-    switch (evt.type) {
-      case "touchstart":
-        type = "mousedown";
-        touch = evt.changedTouches[0];
-        break;
-      case "touchmove":
-        type = "mousemove";
-        touch = evt.changedTouches[0];
-        break;
-      case "touchend":
-        type = "mouseup";
-        touch = evt.changedTouches[0];
-        break;
+    for (var i = 0; i < touches.length; i++) {
+        let x = touches[i].clientX - offset.x;
+        let y = touches[i].clientY - offset.y;
+        console.log("handleMove", x, y );
+        ctx.lineTo(x, y);
+        ctx.stroke();
     }
+}
+//   function onTouch(evt) {
+//     evt.preventDefault();
+//     log("onTouch");
+//     if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
+//       return;
   
-    newEvt.initMouseEvent(type, true, true, evt.originalTarget.ownerDocument.defaultView, 0,
-      touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-      evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
-    evt.originalTarget.dispatchEvent(newEvt);
-  }
+//     var newEvt = document.createEvent("MouseEvents");
+//     var type = null;
+//     var touch = null;
+  
+//     switch (evt.type) {
+//       case "touchstart":
+//         type = "mousedown";
+//         touch = evt.changedTouches[0];
+//         break;
+//       case "touchmove":
+//         type = "mousemove";
+//         touch = evt.changedTouches[0];
+//         break;
+//       case "touchend":
+//         type = "mouseup";
+//         touch = evt.changedTouches[0];
+//         break;
+//     }
+  
+//     newEvt.initMouseEvent(type, true, true, evt.originalTarget.ownerDocument.defaultView, 0,
+//       touch.screenX, touch.screenY, touch.clientX, touch.clientY,
+//       evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
+//     evt.originalTarget.dispatchEvent(newEvt);
+//   }
   function log(msg) {
-    var p = document.getElementById('log');
-    p.innerHTML = msg + "\n" + p.innerHTML;
+    // var p = document.getElementById('log');
+    // p.innerHTML = msg + "\n" + p.innerHTML;
   }
+  function findPos (obj) {
+    var curleft = 0,
+        curtop = 0;
+
+    if (obj.offsetParent) {
+        do {
+            curleft += obj.offsetLeft;
+            curtop += obj.offsetTop;
+        } while (obj = obj.offsetParent);
+
+        return { x: curleft-document.body.scrollLeft, y: curtop-document.body.scrollTop };
+    }
+}
