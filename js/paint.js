@@ -134,6 +134,7 @@ if (saveBtn) {
 
 function handleStart(evt) {
     evt.preventDefault();
+    log("touchstart");
     var touches = evt.changedTouches;
   
     for (var i = 0; i < touches.length; i++) {
@@ -141,12 +142,13 @@ function handleStart(evt) {
       ctx.beginPath();
       ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
       ctx.fill();
-      log("touchstart:" + i + ".");
+      
     }
     
 }
 function handleMove(evt) {
     evt.preventDefault();
+    log("handleMove");
     var touches = evt.changedTouches;
     for (var i = 0; i < touches.length; i++) {
       var idx = ongoingTouchIndexById(touches[i].identifier);
@@ -164,32 +166,11 @@ function handleMove(evt) {
       } else {
       }
     }
-    log("handle Touch Move");
-  }
-
-  function handleMove(evt) {
-    evt.preventDefault();
-    var touches = evt.changedTouches;
-  
-    for (var i = 0; i < touches.length; i++) {
-      var idx = ongoingTouchIndexById(touches[i].identifier);
-  
-      if (idx >= 0) {
-        ctx.beginPath();
-        ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
-        ctx.lineTo(touches[i].pageX, touches[i].pageY);
-        ctx.stroke();
-  
-        ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-      } else {
-        log("can't figure out which touch to end");
-      }
-    }
   }
   function handleEnd(evt) {
     evt.preventDefault();
+    log("handleEnd");
     var touches = evt.changedTouches;
-  
     for (var i = 0; i < touches.length; i++) {
       var idx = ongoingTouchIndexById(touches[i].identifier);
   
@@ -202,13 +183,10 @@ function handleMove(evt) {
       } else {
       }
     }
-    log("handleEnd");
   }
-
   function handleCancel(evt) {
     evt.preventDefault();
     var touches = evt.changedTouches;
-  
     for (var i = 0; i < touches.length; i++) {
       var idx = ongoingTouchIndexById(touches[i].identifier);
       ongoingTouches.splice(idx, 1);  // remove it; we're done
