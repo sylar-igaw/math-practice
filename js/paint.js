@@ -55,6 +55,7 @@ function handleColorClick(event) {
   console.log("color", color);
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
+  log(`color chage ${color}`);
 }
 
 function handleRangeChange(event) {
@@ -67,9 +68,11 @@ function handleModeClick() {
   if (filling === true) {
     filling = false;
     mode.innerText = "Fill";
+    log(`Paint `);
   } else {
     filling = true;
     mode.innerText = "Paint";
+    log(`Fill `);
   }
 }
 
@@ -77,6 +80,7 @@ function handleCanvasClick() {
   if (filling) {
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   }
+  log(`handleCanvasClick `);
 }
 
 function handleCM(event) {
@@ -218,4 +222,9 @@ function handleMove(evt) {
       var idx = ongoingTouchIndexById(touches[i].identifier);
       ongoingTouches.splice(idx, 1);  // remove it; we're done
     }
+  }
+
+  function log(msg) {
+    var p = document.getElementById('log');
+    p.innerHTML = msg + "\n" + p.innerHTML;
   }
