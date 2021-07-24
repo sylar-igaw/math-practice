@@ -159,7 +159,7 @@ function handleMove(evt) {
 //     var touch = null;
 
 //     switch (evt.type) {
-//       case "touchstart":
+//       case "touchstart":++++++
 //         type = "mousedown";
 //         touch = evt.changedTouches[0];
 //         break;
