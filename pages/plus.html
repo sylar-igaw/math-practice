@@ -34,7 +34,7 @@
 
 <template id="plus_template">
     <div class="question pt-1">
-        <div class="d-flex">
+        <div class="d-flex flex-wrap">
             <span class="number p-1 first">{first}</span>
             <i class="bi bi-plus p-2"></i>
             <span class="number p-1 second">{second}</span>
@@ -44,12 +44,13 @@
         </li>
 </template>
 <script>
-    var max_question = 12;
+    var max_question = 20;
     var arrPlus= {};
+
     $("document").ready(function () {
-        while ( Object.keys(arrPlus).length <= max_question) {
-            let first = getRandomArbitrary(1, 9).toFixed();
-            let second = getRandomArbitrary(1, 9).toFixed();
+        while ( Object.keys(arrPlus).length < max_question) {
+            let first = getRandomArbitrary(10, 99).toFixed();
+            let second = getRandomArbitrary(10, 99).toFixed();
             let key = `${first}${second}`;
             arrPlus[key] = {first : first, second : second};
         }
