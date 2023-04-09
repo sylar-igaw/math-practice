@@ -40,17 +40,17 @@
             <i class="bi bi-dash p-2"></i>
             <span class="number p-1 second">{second}</span>
             <i class="bi bi-pause p-2"></i>
-            <input class="answer" name="answer" type="number" data-value="{answer}" min=0 max=9 />
+            <input class="answer" name="answer" type="number" data-value="{answer}" min=0 max=99 />
         </div>
     </li>
 </template>
 <script>
-    var max_question = 12;
+    var max_question = 19;
     var arrMinus= {};
     $("document").ready(function () {
         while ( Object.keys(arrMinus).length <= max_question) {
-            let first = getRandomArbitrary(1,9).toFixed();
-            let second = getRandomArbitrary(1,9).toFixed();
+            let first = getRandomArbitrary(10,99).toFixed();
+            let second = getRandomArbitrary(10,99).toFixed();
             //console.log(first, second);
             if( second >= first){
                 var temp = first;
@@ -76,7 +76,7 @@
                     $(this).closest("div").removeClass("success").addClass("fail");
                 }
             });
-            if( $("div.success").length == max_question )
+            if( $("div.success").length == (max_question+1) )
             {
                 var ans = confirm("Perfect!!! 완벽해요. Try again? 다시 할래요?");
                 if( ans )
