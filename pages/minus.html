@@ -20,16 +20,37 @@
 
 
 <body class="font-monospace">
-    <form id="frm_test">
-        <div class="p-2">
+    <form id="frm_test" class="d-flex">
+        <div class="p-2 col-sm-8" >
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnLevel" id="btnradio1" autocomplete="off" checked value="1">
+                <label class="btn btn-outline-primary" for="btnradio1">1~9</label>
+              
+                <input type="radio" class="btn-check" name="btnLevel" id="btnradio2" autocomplete="off" value="10">
+                <label class="btn btn-outline-primary" for="btnradio2">10~99</label>
+              
+                <input type="radio" class="btn-check" name="btnLevel" id="btnradio3" autocomplete="off" value="100">
+                <label class="btn btn-outline-primary" for="btnradio3">100~999</label>
+            </div>
             <div class="page-title"> * 빼기 연습  </div>
+            <div class="d-flex"><span>걸린시간 : </span><div id="stopWatch"></div></div>
+            <div class="btn btn-outline-success ms-5 mt-2" id="btn_start">시작</div>
             <div class="plus-practice" id="minus_practice">
             </div>
         </div>
-        <div class="btn btn-outline-success ms-5 mt-2" id="btn-check" >확인</div>
+        <div class="col-sm-4">
+            <label class="title col">기록 </label> 
+            <div >
+                <table class="table">
+                    <tbody id="history">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </form>
     <div class="footer">
-        
+        <div class="btn btn-outline-success ms-5 mt-2 " style="display:none;" id="btn_check">확인</div>
     </div>
 </body>
 
@@ -45,51 +66,50 @@
     </li>
 </template>
 <script>
-    var max_question = 19;
+    var max_question = 20;
     var arrMinus= {};
     $("document").ready(function () {
-        while ( Object.keys(arrMinus).length <= max_question) {
-            let first = getRandomArbitrary(10,99).toFixed();
-            let second = getRandomArbitrary(10,99).toFixed();
-            //console.log(first, second);
-            if( second >= first){
-                var temp = first;
-                first = second;
-                second = temp;
-            }
-            let key = `${first}${second}`;
-            arrMinus[key] = {first : first, second : second};
-        }
-        for( var key in arrMinus)
-        {
-            addMinus(arrMinus[key].first, arrMinus[key].second);
-        }
-
-        $("#btn-check").click(()=>{
-            $("input").each(function(){
-                //console.log("compare", $(this).val() , $(this).data("value"));
-                if( $(this).val() && ($(this).val()  == $(this).data("value")))
-                {
+        displayHistory()
+        $("#btn_start").click(()=>{
+            startMath()
+        })
+        $("#btn_check").click(() => {
+            const diff = checkTime()
+            const resultTime = displayTime(diff)
+            setTimeout(()=>{
+                $("input").each(function () {
+                if ($(this).val() == $(this).data("value")) {
                     $(this).closest("div").removeClass("fail").addClass("success");
                 }
                 else {
                     $(this).closest("div").removeClass("success").addClass("fail");
                 }
             });
-            if( $("div.success").length == (max_question+1) )
-            {
-                var ans = confirm("Perfect!!! 완벽해요. Try again? 다시 할래요?");
-                if( ans )
-                {
-                    location.reload();
-                }
-            }
-            else 
-            {
-                alert("Correct the answer in the red box! 빨간 상자안의 답을 수정하세요")
-            }
+            if ($("div.success").length == max_question) {
+                alert(`Perfect!!! 완벽해요. 소요시간 : ${resultTime}!`);
+                const level = $("input[name='btnLevel']:checked").val()
+                let history = window.localStorage.getItem(`minus_${level}`)
+                history = JSON.parse(history)
+                if( !history) history=[]
+                history.push({
+                    date : new Date().toLocaleString(),
+                    value : diff
+                })
 
+                window.localStorage.setItem(`minus_${level}`, JSON.stringify(history))
+                setTimeout(displayHistory, 1000)
+            }
+            else {
+                alert("Correct the answer in the red box! 빨간 상자안의 답을 수정하세요")
+                }
+            },100)
+            
         });
+        $(".btn-group").click(()=>{
+            displayHistory()
+            
+        })
+        
     });
     function getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
@@ -101,6 +121,74 @@
                 .replace("{second}", second)
                 .replace("{answer}", parseInt(first)-parseInt(second))
             $("#minus_practice").append(appendHtml);
+    }
+    let nowTimeStamp = 0
+    function startMath(){
+        $("#stopWatch").html('')
+        starTimeStamp = Date.now()
+        const level = $("input[name='btnLevel']:checked").val()
+        while ( Object.keys(arrMinus).length < max_question) {
+            let first = getRandomArbitrary( 1* level, (10*level-1)).toFixed();
+            let second = getRandomArbitrary(1* level, (10*level-1)).toFixed();
+            if( first <= second)
+            {   
+                if( level == 1)
+                    first = parseInt(first) + (10*level-1)
+                else{
+                    [first,second] = [second , first]
+                }
+            }
+            let key = `${first}${second}`;
+            arrMinus[key] = {first : first, second : second};
+        }
+        
+        for( var key in arrMinus)
+        {
+            addMinus(arrMinus[key].first, arrMinus[key].second);
+        }
+        $("#btn_start").hide()
+        $("#btn_check").show()
+    } 
+
+    function displayTime(diffTime){
+        const mSec = diffTime % 1000
+        const sec = parseInt(diffTime / 1000) % 60 + ''
+        const min = parseInt(diffTime / 1000 / 60) % 60
+        $("#stopWatch").html(`${min}분 ${sec.padStart(2, '0')}초 ${mSec}밀리초`)
+        return `${min}분 ${sec.padStart(2, '0')}초 ${mSec} 밀리초`
+    }
+    function checkTime(){
+        const endTimeStamp  = Date.now()
+        const diffTime = endTimeStamp - starTimeStamp
+        return diffTime
+    }
+    function displayHistory()
+    {
+        const level = $("input[name='btnLevel']:checked").val()
+        let records = window.localStorage.getItem(`minus_${level}`)
+        records = JSON.parse(records)
+        $("#history").html('')
+        if(records)
+        {
+            records.sort((a,b)=>{
+                return a.value > b.value ? 1 : -1
+            })
+            if( records.length > 10){
+                records = records.filter((x,index)=> index < 10)
+                window.localStorage.setItem(`minus_${level}`, records)
+            }
+            const tableData = records.map((x,index) => {
+                return (
+                    `<tr>
+                        <td>${index+1}</td>
+                        <td>${x.date}</td>
+                        <td>${displayTime(x.value)}</td>
+                    </tr>`
+                );
+                }).join('');
+            $("#history").append(tableData)
+            
+        }
     }
 </script>
 
