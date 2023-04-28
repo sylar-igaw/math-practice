@@ -1,2 +1,2 @@
 # sylar.github.io
-pages 
+https://sylar-igaw.github.io/math-practice
