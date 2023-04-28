@@ -118,10 +118,8 @@
             displayHistory()
         })
         $("#btn_record_init").click(()=>{
-            alert(1)
             const level = $("input[name='btnLevel']:checked").val()
             window.localStorage.removeItem(`plus_${level}`)
-
         })
     });
     function getRandomArbitrary(min, max) {
