@@ -40,6 +40,7 @@
         </div>
         <div class="col-sm-4">
             <label class="title col">기록 </label> 
+            <div class="btn btn-danger" style="float: right;" id="btn_record_init">초기화</div>
             <div >
                 <table class="table">
                     <tbody id="history">
@@ -109,6 +110,10 @@
             displayHistory()
             
         })
+        $("#btn_record_init").click(()=>{
+            const level = $("input[name='btnLevel']:checked").val()
+            window.localStorage.removeItem(`plus_${level}`)
+        })
         
     });
     function getRandomArbitrary(min, max) {
@@ -148,6 +153,7 @@
         }
         $("#btn_start").hide()
         $("#btn_check").show()
+        
     } 
 
     function displayTime(diffTime){
