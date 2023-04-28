@@ -174,8 +174,8 @@
                 return a.value > b.value ? 1 : -1
             })
             if( records.length > 10){
-                records = records.filter((x,index)=> index < 10)
-                window.localStorage.setItem(`minus_${level}`, records)
+                records = records.filter((x,index)=> index <= 10)
+                window.localStorage.setItem(`minus_${level}`, JSON.stringify(records))
             }
             const tableData = records.map((x,index) => {
                 return (
