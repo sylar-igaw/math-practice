@@ -20,26 +20,23 @@
 </head>
 
 <body class="font-monospace">
-    <div id="frm_test" class="d-flex">
-        <div class="p-2 col-sm-8">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group" >
-                <input type="radio" class="btn-check" name="btnLevel" id="btnradio1" autocomplete="off" checked value="1" >
-                <label class="btn btn-outline-primary" for="btnradio1">1~9</label>
+    <div id="frm_test"  class="d-flex">
+        <div class="p-2  col-sm-8">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnLevel" id="btnradio1" autocomplete="off" checked value="1">
+                <label class="btn btn-outline-primary" for="btnradio1">Level 1</label>
               
-                <input type="radio" class="btn-check" name="btnLevel" id="btnradio2" autocomplete="off" value="10" >
-                <label class="btn btn-outline-primary" for="btnradio2">10~99</label>
+                <input type="radio" class="btn-check" name="btnLevel" id="btnradio2" autocomplete="off" value="10">
+                <label class="btn btn-outline-primary" for="btnradio2">Level 2</label>
               
                 <input type="radio" class="btn-check" name="btnLevel" id="btnradio3" autocomplete="off" value="100">
-                <label class="btn btn-outline-primary" for="btnradio3">100~999</label>
+                <label class="btn btn-outline-primary" for="btnradio3">Level 3</label>
             </div>
-            <div class="page-title"> * 더하기 연습 </div>
+            <div class="page-title"> * 나누기 연습 </div>
             <div class="d-flex"><span>걸린시간 : </span><div id="stopWatch"></div></div>
             <div class="btn btn-outline-success ms-5 mt-2" id="btn_start">시작</div>
-            
-                <div class="plus-practice col-sm-9" id="plus_practice">
-                </div>
-               
-            
+            <div class="math-practice" id="math_practice">
+            </div>
         </div>
         <div class="col-sm-4">
             <label class="title col">기록 </label> 
@@ -58,11 +55,11 @@
     </div>
 </body>
 
-<template id="plus_template">
+<template id="question_template">
     <div class="question pt-1">
         <div class="d-flex flex-wrap">
             <span class="number p-1 first">{first}</span>
-            <i class="bi bi-plus p-2"></i>
+            <i class="bi bi-slash p-2"></i>
             <span class="number p-1 second">{second}</span>
             <i class="bi bi-pause p-2"></i>
             <input class="answer" name="answer" type="number" data-value="{answer}" min=0  />
@@ -71,7 +68,7 @@
 </template>
 <script>
     var max_question = 5;
-    var arrPlus= {};
+    var arrMutiple= {};
     let starTimeStamp = Date.now()
 
 
@@ -94,9 +91,9 @@
                 }
             });
             if ($("div.success").length == max_question) {
-                alert(`Perfect!!! 완벽해요. 소요시간 : ${resultTime}!` );
+                alert(`Perfect!!! 완벽해요. 소요시간 : ${resultTime}!`);
                 const level = $("input[name='btnLevel']:checked").val()
-                let history = window.localStorage.getItem(`plus_${level}`)
+                let history = window.localStorage.getItem(`multiple_${level}`)
                 history = JSON.parse(history)
                 if( !history) history=[]
                 history.push({
@@ -104,9 +101,8 @@
                     value : diff
                 })
 
-                window.localStorage.setItem(`plus_${level}`, JSON.stringify(history))
+                window.localStorage.setItem(`multiple_${level}`, JSON.stringify(history))
                 setTimeout(displayHistory, 1000)
-                
             }
             else {
                 alert("Correct the answer in the red box! 빨간 상자안의 답을 수정하세요")
@@ -125,13 +121,13 @@
     function getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
     }
-    function addPlus(first, second) {
-        let $element = $("#plus_template").clone();
+    function addQuestion(first, second) {
+        let $element = $("#question_template").clone();
         let appendHtml = $element.html()
-            .replace("{first}", first)
+            .replace("{first}", parseInt(first) * parseInt(second))
             .replace("{second}", second)
-            .replace("{answer}", parseInt(first) + parseInt(second))
-        $("#plus_practice").append(appendHtml);
+            .replace("{answer}", first)
+        $("#math_practice").append(appendHtml);
     }
     
     
@@ -140,69 +136,64 @@
         $("#stopWatch").html('')
         starTimeStamp = Date.now()
         const level = $("input[name='btnLevel']:checked").val()
-        while ( Object.keys(arrPlus).length < max_question) {
-            let first = getRandomArbitrary( 1* level, (10*level-1)).toFixed();
-            let second = getRandomArbitrary(1* level, (10*level-1)).toFixed();
+        while ( Object.keys(arrMutiple).length < max_question) {
+            let first = getRandomArbitrary( (1* level)+1, (10*level-1)).toFixed();
+            let second = getRandomArbitrary(2, 9).toFixed();
             let key = `${first}${second}`;
-            arrPlus[key] = {first : first, second : second};
+            arrMutiple[key] = {first : first, second : second};
         }
         
-        for( var key in arrPlus)
+        for( var key in arrMutiple)
         {
-            addPlus(arrPlus[key].first, arrPlus[key].second);
+            addQuestion(arrMutiple[key].first, arrMutiple[key].second);
         }
         $("#btn_start").hide()
         $("#btn_check").show()
+
     } 
 
     function displayTime(diffTime){
         const mSec = diffTime % 1000
-        const sec = parseInt(diffTime / 1000)  + ''
-        //const min = parseInt(diffTime / 1000 / 60) % 60
-        $("#stopWatch").html(`${sec.padStart(2, '0')}s ${mSec}ms`)
-        return `${sec}s ${mSec}ms`
+        const sec = parseInt(diffTime / 1000) % 60 + ''
+        const min = parseInt(diffTime / 1000 / 60) % 60
+        $("#stopWatch").html(`${min}분 ${sec.padStart(2, '0')}초 ${mSec}밀리초`)
+        return `${min}분 ${sec.padStart(2, '0')}초 ${mSec} 밀리초`
     }
     function checkTime(){
         const endTimeStamp  = Date.now()
         const diffTime = endTimeStamp - starTimeStamp
         return diffTime
     }
-
     function displayHistory()
     {
-        try{
-            const level = $("input[name='btnLevel']:checked").val()
-            let records = window.localStorage.getItem(`plus_${level}`)
-            console.log(records)
-            records = JSON.parse(records)
-            $("#history").html('')
-            if(records)
-            {
-                records.sort((a,b)=>{
-                    return a.value > b.value ? 1 : -1
-                })
-                if( records.length > 10){
-                    records = records.filter((x,index)=> index <= 10)
-                    window.localStorage.setItem(`plus_${level}`, JSON.stringify(records))
-                }
-                const tableData = records.map((x,index) => {
-                    return (
-                        `<tr>
-                            <td>${index+1}</td>
-                            <td>${x.date}</td>
-                            <td>${displayTime(x.value)}</td>
-                        </tr>`
-                    );
-                    }).join('');
-                $("#history").append(tableData)
-                
-            }
-        }
-        catch(ex)
+        const level = $("input[name='btnLevel']:checked").val()
+        let records = window.localStorage.getItem(`multiple_${level}`)
+        records = JSON.parse(records)
+        $("#history").html('')
+        if(records)
         {
-            console.log("error in displayHistory")
+            records.sort((a,b)=>{
+                return a.value > b.value ? 1 : -1
+            })
+            if( records.length > 10){
+                records = records.filter((x,index)=> index <= 10)
+                window.localStorage.setItem(`multiple_${level}`, JSON.stringify(records))
+            }
+            const tableData = records.map((x,index) => {
+                return (
+                    `<tr>
+                        <td>${index+1}</td>
+                        <td>${x.date}</td>
+                        <td>${displayTime(x.value)}</td>
+                    </tr>`
+                );
+                }).join('');
+            $("#history").append(tableData)
+            
         }
     }
+    
+
 </script>
 
 </html>
